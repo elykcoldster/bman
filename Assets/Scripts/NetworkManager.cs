@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
 
@@ -14,6 +15,9 @@ namespace Bomberman.Networking {
 			get;
 			protected set;
 		}
+
+		public static string lobbyScene = "lobby";
+		public static string gameScene = "field";
 
 		public bool AllPlayersReady {
 			get {
@@ -50,6 +54,8 @@ namespace Bomberman.Networking {
 			connectedPlayers.Add (player);
 
 			player.OnEnterLobbyScene ();
+
+			UpdatePlayerIDs ();
 		}
 
 		public void DeregisterPlayer(NetworkPlayer player) {
@@ -73,11 +79,21 @@ namespace Bomberman.Networking {
 		}
 
 		public void BeginMatch() {
-			// print (AllPlayersReady);
+			if (AllPlayersReady) {
+				ServerChangeScene (gameScene);
+
+				matchMaker.SetMatchAttributes(matchInfo.networkId, false, 0, (success, info) => Debug.Log("Match hidden"));
+			}
 		}
 
 		public void JoinMatch(MatchInfoSnapshot matchInfo) {
 			matchMaker.JoinMatch (matchInfo.networkId, string.Empty, string.Empty, string.Empty, 0, 0, OnMatchJoined);
+		}
+
+		private void UpdatePlayerIDs() {
+			for (int i = 0; i < connectedPlayers.Count; i++) {
+				connectedPlayers [i].SetPlayerId (i);
+			}
 		}
 
 		public override void OnMatchCreate (bool success, string extendedInfo, MatchInfo matchInfo)
@@ -100,6 +116,27 @@ namespace Bomberman.Networking {
 			base.OnMatchJoined (success, extendedInfo, matchInfo);
 
 			print (matchInfo.networkId.ToString() + " joined");
+		}
+
+		public override void OnClientSceneChanged (NetworkConnection conn)
+		{
+			Debug.Log ("Scene Changed");
+
+			base.OnClientSceneChanged (conn);
+
+			string sceneName = SceneManager.GetActiveScene ().name;
+
+			if (sceneName == gameScene) {
+				for (int i = 0; i < connectedPlayers.Count; i++) {
+					NetworkPlayer np = connectedPlayers [i];
+					np.OnEnterGameScene ();
+				}
+			} else if (sceneName == lobbyScene) {
+				for (int i = 0; i < connectedPlayers.Count; i++) {
+					NetworkPlayer np = connectedPlayers [i];
+					np.OnEnterLobbyScene ();
+				}
+			}
 		}
 
 	}

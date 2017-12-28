@@ -22,6 +22,12 @@ namespace Bomberman.Networking {
 			protected set;
 		}
 
+		public int PlayerId {
+			get {
+				return playerId;
+			}
+		}
+
 		[SyncVar(hook = "OnNameChanged")]
 		public string username = "";
 
@@ -31,6 +37,8 @@ namespace Bomberman.Networking {
 		[SyncVar(hook = "OnReady")]
 		public bool ready = false;
 
+		private PlayerManager player;
+		private int playerId;
 
 		// Use this for initialization
 		void Start () {
@@ -47,6 +55,12 @@ namespace Bomberman.Networking {
 				if (lobbyObject == null) {
 					CreateLobbyObject ();
 				}
+			}
+		}
+
+		public void OnEnterGameScene() {
+			if (hasAuthority) {
+				CmdSpawnGameScenePlayer ();
 			}
 		}
 
@@ -112,6 +126,10 @@ namespace Bomberman.Networking {
 			}
 		}
 
+		public void SetPlayerId(int id) {
+			playerId = id;
+		}
+
 		[Command]
 		public void CmdNameChanged(string str) {
 			this.username = str;
@@ -130,6 +148,17 @@ namespace Bomberman.Networking {
 		[Command]
 		private void CmdInitialize() {
 			initialized = true;
+		}
+
+		[Command]
+		private void CmdSpawnGameScenePlayer() {
+			Debug.Log ("Spawn Game Scene Player");
+
+			GameObject playerObject = Instantiate (playerPrefab);
+			NetworkServer.SpawnWithClientAuthority (playerObject, connectionToClient);
+
+			player = playerObject.GetComponent<PlayerManager> ();
+			player.Init (this);
 		}
 
 		[ClientRpc]

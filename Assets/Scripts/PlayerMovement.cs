@@ -28,6 +28,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	private void KeyboardInput() {
 		if (!playerManager.hasAuthority || playerManager.Dead) {
+			playerManager.rb.velocity = Vector2.zero;
 			return;
 		}
 

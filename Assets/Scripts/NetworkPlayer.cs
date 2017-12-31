@@ -28,6 +28,12 @@ namespace Bomberman.Networking {
 			}
 		}
 
+		public PlayerManager Player {
+			get {
+				return player;
+			}
+		}
+
 		[SyncVar(hook = "OnNameChanged")]
 		public string username = "";
 

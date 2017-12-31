@@ -22,21 +22,16 @@ public class MenuUI : Singleton<MenuUI> {
 	[SerializeField]
 	protected GameObject serverListPrefab;
 	[SerializeField]
-	protected InputField username;
-	[SerializeField]
 	protected InputField gameName;
-
-	public string Username {
-		get {
-			return username.text;
-		}
-	}
+	[SerializeField]
+	protected Button startButton;
 
 	List<ServerObject> serverListObjects;
 
 	// Use this for initialization
 	void Start () {
 		serverListObjects = new List<ServerObject> ();
+		startButton.onClick.AddListener (StartButtonClick);
 	}
 
 	public void OnHostClicked() {
@@ -72,6 +67,10 @@ public class MenuUI : Singleton<MenuUI> {
 
 	public void ShowLobbyPanel() {
 		lobbyPanel.gameObject.SetActive (true);
+	}
+
+	private void StartButtonClick() {
+		NetworkManager.Instance.BeginMatch ();
 	}
 		
 }

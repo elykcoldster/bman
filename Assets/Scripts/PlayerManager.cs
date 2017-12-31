@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+using BombermanNetworkManager = Bomberman.Networking.NetworkManager;
 using BombermanNetworkPlayer = Bomberman.Networking.NetworkPlayer;
 
 public class PlayerManager : NetworkBehaviour {
 
 	[SerializeField]
 	protected float syncFrequency = 10f;
+	[SerializeField]
+	protected float deathTime = 2f;
+	[SerializeField]
+	protected float invincibleTime = 3f;
+	[SerializeField]
+	protected Color invincibleColor;
 
 	public BombermanNetworkPlayer networkPlayer {
 		get;
@@ -39,9 +46,39 @@ public class PlayerManager : NetworkBehaviour {
 		}
 	}
 
+	public PlayerBomb playerBomb {
+		get {
+			return GetComponent<PlayerBomb> ();
+		}
+	}
+
 	public float syncInterval {
 		get {
 			return 1 / syncFrequency;
+		}
+	}
+
+	public bool Dead {
+		get {
+			return dead;
+		}
+	}
+
+	public int PlayerId {
+		get {
+			return playerId;
+		}
+	}
+
+	public int Lives {
+		get {
+			return lives;
+		}
+	}
+
+	public bool Invincible {
+		get {
+			return invincible;
 		}
 	}
 
@@ -51,8 +88,16 @@ public class PlayerManager : NetworkBehaviour {
 	private float syncH;
 	[SyncVar]
 	private float syncV;
+	[SyncVar]
+	private int playerId;
+	[SyncVar(hook="OnLivesChanged")]
+	private int lives;
+	[SyncVar(hook="OnDeath")]
+	private bool dead;
+	[SyncVar(hook="OnInvincible")]
+	private bool invincible;
 
-	private float syncTimer = 0f;
+	private float syncTimer = 0f, deathTimer = 0f, invincibleTimer = 0f;
 	private Vector2 spawnPoint;
 
 	[SyncVar(hook="OnInitialized")]
@@ -66,14 +111,25 @@ public class PlayerManager : NetworkBehaviour {
 
 		AnimateLocalPlayer ();
 		Sync ();
+		ProcessDeath ();
+		ProcessInvincible ();
 	}
 
 	public void Init(BombermanNetworkPlayer netPlayer) {
 		networkPlayer = netPlayer;
+		playerId = networkPlayer.PlayerId;
+		lives = GameManager.PLAYER_LIVES;
 
 		spawnPoint = GameManager.Instance.SpawnPoints [networkPlayer.PlayerId].transform.position;
 
 		CmdSetInitialized (spawnPoint);
+	}
+
+	public void SpawnBomb(float t) {
+		int x = Mathf.RoundToInt(rb.position.x / 0.5f);
+		int y = Mathf.RoundToInt(rb.position.y / 0.5f);
+
+		CmdSpawnBomb (new Vector2(x * 0.5f, y * 0.5f), t);
 	}
 
 	private void AnimateLocalPlayer() {
@@ -82,6 +138,35 @@ public class PlayerManager : NetworkBehaviour {
 		}
 
 		SetAnimation (playerMovement.h_Input, playerMovement.v_Input);
+	}
+
+	private void ProcessDeath() {
+		if (!hasAuthority || !Dead) {
+			return;
+		}
+
+		deathTimer += Time.deltaTime;
+
+		if (deathTimer >= deathTime) {
+			deathTimer = 0f;
+
+			if (lives > 0) {
+				CmdResetDeathFlag ();
+			}
+		}
+	}
+
+	private void ProcessInvincible() {
+		if (!hasAuthority || !Invincible) {
+			return;
+		}
+
+		invincibleTimer += Time.deltaTime;
+
+		if (invincibleTimer >= invincibleTime) {
+			invincibleTimer = 0f;
+			CmdSetInvincible (false);
+		}
 	}
 
 	private void Sync() {
@@ -128,6 +213,27 @@ public class PlayerManager : NetworkBehaviour {
 		hasInitialized = value;
 	}
 
+	private void OnDeath(bool value) {
+		dead = value;
+
+		if (dead) {
+			anim.SetTrigger ("death");
+		} else {
+			anim.SetTrigger ("revive");
+		}
+	}
+
+	private void OnLivesChanged(int v) {
+		lives = v;
+		GameMenu.Instance.UpdateValues (playerId, lives);
+	}
+
+	private void OnInvincible(bool v) {
+		invincible = v;
+
+		sr.color = invincible ? invincibleColor : Color.white;
+	}
+
 	private void SetAnimation(float h, float v) {
 		anim.SetBool ("down", v < 0f);
 		anim.SetBool ("up", v > 0f);
@@ -155,6 +261,43 @@ public class PlayerManager : NetworkBehaviour {
 		RpcSetInitialized (spawn);
 	}
 
+	[Command]
+	private void CmdSpawnBomb(Vector2 position, float t) {
+		GameObject bombObj = Instantiate (playerBomb.BombPrefab);
+		bombObj.transform.position = position;
+		bombObj.GetComponent<Bomb> ().Init (t);
+
+		NetworkServer.SpawnWithClientAuthority (bombObj, networkPlayer.gameObject);
+	}
+
+	[Command]
+	public void CmdSetDeathFlag() {
+		if (dead) {
+			return;
+		}
+
+		dead = true;
+		lives--;
+
+		GameManager.Instance.EvaluateVictory (BombermanNetworkManager.Instance.connectedPlayers);
+	}
+
+	[Command]
+	private void CmdResetDeathFlag() {
+		if (!dead) {
+			return;
+		}
+
+		dead = false;
+		//rb.position = GameManager.Instance.SpawnPoints [Random.Range (0, GameManager.Instance.SpawnPoints.Count)].transform.position;
+		CmdSetInvincible(true);
+	}
+
+	[Command]
+	private void CmdSetInvincible(bool inv) {
+		invincible = inv;
+	}
+
 	[ClientRpc]
 	private void RpcSyncRB(Vector2 position) {
 		syncPosition = position;
@@ -173,5 +316,32 @@ public class PlayerManager : NetworkBehaviour {
 	private void RpcSyncAnimation(float h, float v) {
 		syncH = h;
 		syncV = v;
+	}
+
+	[ClientRpc]
+	public void RpcSetVictory() {
+		if (!hasAuthority) {
+			return;
+		}
+
+		Debug.Log ("Victory!");
+	}
+
+	[ClientRpc]
+	public void RpcSetLoss() {
+		if (!hasAuthority) {
+			return;
+		}
+
+		Debug.Log ("You lost!");
+	}
+
+	[ClientRpc]
+	public void RpcSetTie() {
+		if (!hasAuthority) {
+			return;
+		}
+
+		Debug.Log ("It's a tie!");
 	}
 }

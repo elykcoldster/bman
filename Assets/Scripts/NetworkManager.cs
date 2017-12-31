@@ -86,6 +86,37 @@ namespace Bomberman.Networking {
 			}
 		}
 
+		public void BackToMenu() {
+
+			if (Network.isServer) {
+				if (matchMaker != null && matchInfo != null) {
+					matchMaker.DestroyMatch (matchInfo.networkId, 0, (success, info) => {
+						StopMatchMaker ();
+						StopHost ();
+
+						matchInfo = null;
+					});
+				} else {
+					StopMatchMaker ();
+					StopHost ();
+				}
+			} else {
+				if (matchMaker != null && matchInfo != null) {
+					matchMaker.DropConnection (matchInfo.networkId, matchInfo.nodeId, 0, (success, info) => {
+						StopMatchMaker ();
+						StopClient ();
+
+						matchInfo = null;
+					});
+				} else {
+					StopMatchMaker ();
+					StopClient ();
+				}
+			}
+
+			SceneManager.LoadScene (lobbyScene);
+		}
+
 		public void JoinMatch(MatchInfoSnapshot matchInfo) {
 			matchMaker.JoinMatch (matchInfo.networkId, string.Empty, string.Empty, string.Empty, 0, 0, OnMatchJoined);
 		}
@@ -94,6 +125,40 @@ namespace Bomberman.Networking {
 			for (int i = 0; i < connectedPlayers.Count; i++) {
 				connectedPlayers [i].SetPlayerId (i);
 			}
+		}
+
+		public override void OnStopServer ()
+		{
+			base.OnStopServer ();
+
+			Debug.Log ("StopServer");
+
+			for (int i = 0; i < connectedPlayers.Count; i++) {
+				NetworkPlayer player = connectedPlayers [i];
+
+				if (player != null) {
+					NetworkServer.Destroy (player.gameObject);
+				}
+			}
+
+			connectedPlayers.Clear ();
+		}
+
+		public override void OnStopClient ()
+		{
+			base.OnStopClient ();
+
+			Debug.Log ("StopClient");
+
+			for (int i = 0; i < connectedPlayers.Count; i++) {
+				NetworkPlayer player = connectedPlayers [i];
+
+				if (player != null) {
+					Destroy (player.gameObject);
+				}
+			}
+
+			connectedPlayers.Clear ();
 		}
 
 		public override void OnMatchCreate (bool success, string extendedInfo, MatchInfo matchInfo)
@@ -131,6 +196,8 @@ namespace Bomberman.Networking {
 					NetworkPlayer np = connectedPlayers [i];
 					np.OnEnterGameScene ();
 				}
+
+				GameMenu.Instance.Init ();
 			} else if (sceneName == lobbyScene) {
 				for (int i = 0; i < connectedPlayers.Count; i++) {
 					NetworkPlayer np = connectedPlayers [i];

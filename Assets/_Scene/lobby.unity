@@ -548,7 +548,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -735,7 +735,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -522, y: 315.79996}
+  m_AnchoredPosition: {x: -522, y: 304.99994}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &779183928
@@ -930,7 +930,7 @@ Prefab:
     - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
         type: 2}
       propertyPath: m_SpawnPrefabs.Array.size
-      value: 1
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4067581792742548, guid: 681c751a49a8cda4ebb922be150d94c6, type: 2}
       propertyPath: m_LocalPosition.x
@@ -970,6 +970,54 @@ Prefab:
       value: 
       objectReference: {fileID: 1231304484499920, guid: 4ee9e2a998a6c4e44886f5ae63463014,
         type: 2}
+    - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 1035664754806968, guid: 07a53da37fee09f4891992cd66294b64,
+        type: 2}
+    - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 1686887564754984, guid: 1192044fdab65a04db6361cd8847d9eb,
+        type: 2}
+    - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 1383473454191486, guid: 6ee56e286f7c7e04f84df29b2c0e9628,
+        type: 2}
+    - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 1852652108478836, guid: 4b82827c007199847b6c90833553e9e3,
+        type: 2}
+    - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[5]
+      value: 
+      objectReference: {fileID: 1713604835874186, guid: 945e366b82bbeff40ace8201c637d3c2,
+        type: 2}
+    - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[6]
+      value: 
+      objectReference: {fileID: 1557131324173114, guid: 91a1c3880e075094e8716f7a0c33f92d,
+        type: 2}
+    - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[7]
+      value: 
+      objectReference: {fileID: 1504146405839734, guid: 8ffeb251d6561b84da8f933fe497f695,
+        type: 2}
+    - target: {fileID: 114524178158376186, guid: 681c751a49a8cda4ebb922be150d94c6,
+        type: 2}
+      propertyPath: m_SpawnPrefabs.Array.data[8]
+      value: 
+      objectReference: {fileID: 1319940490376654, guid: 48d3eefa13eb8f843bf095d259b7a1c3,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 681c751a49a8cda4ebb922be150d94c6, type: 2}
   m_IsPrefabParent: 0
@@ -1007,7 +1055,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -522, y: 270.8}
+  m_AnchoredPosition: {x: -522, y: 260}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &977359454
@@ -1129,7 +1177,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -353.8, y: 315.79996}
+  m_AnchoredPosition: {x: -353.8, y: 304.99994}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1215624717
@@ -1665,8 +1713,8 @@ MonoBehaviour:
   playerList: {fileID: 1657236873}
   serverListPrefab: {fileID: 1328220692914234, guid: 792294dafb70d264cb73c3a01235309e,
     type: 2}
-  username: {fileID: 0}
   gameName: {fileID: 779183928}
+  startButton: {fileID: 1833355668}
 --- !u!1 &1556647402
 GameObject:
   m_ObjectHideFlags: 0
@@ -2237,18 +2285,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1833355669}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1290336232}
-        m_MethodName: BeginMatch
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1833355669
@@ -2562,7 +2599,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 0
     m_HorizontalOverflow: 1

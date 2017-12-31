@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	private void KeyboardInput() {
-		if (!playerManager.hasAuthority) {
+		if (!playerManager.hasAuthority || playerManager.Dead) {
 			return;
 		}
 

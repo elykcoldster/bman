@@ -30,7 +30,7 @@ public class GameMenu : Singleton<GameMenu> {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Escape)) {
-			// gameMenuPanel.SetActive (!gameMenuPanel.activeSelf);
+			gameMenuPanel.SetActive (!gameMenuPanel.activeSelf);
 		}
 	}
 

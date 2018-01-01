@@ -80,9 +80,11 @@ namespace Bomberman.Networking {
 
 		public void BeginMatch() {
 			if (AllPlayersReady) {
-				ServerChangeScene (gameScene);
 
-				matchMaker.SetMatchAttributes(matchInfo.networkId, false, 0, (success, info) => Debug.Log("Match hidden"));
+				ServerChangeScene (gameScene);
+				UnlistMatch ();
+
+				// matchMaker.SetMatchAttributes(matchInfo.networkId, false, 0, (success, info) => Debug.Log("Match hidden"));
 			}
 		}
 
@@ -91,13 +93,13 @@ namespace Bomberman.Networking {
 			if (Network.isServer) {
 				if (matchMaker != null && matchInfo != null) {
 					matchMaker.DestroyMatch (matchInfo.networkId, 0, (success, info) => {
-						StopMatchMaker ();
+						//StopMatchMaker ();
 						StopHost ();
 
 						matchInfo = null;
 					});
 				} else {
-					StopMatchMaker ();
+					//StopMatchMaker ();
 					StopHost ();
 				}
 			} else {
@@ -124,6 +126,12 @@ namespace Bomberman.Networking {
 		private void UpdatePlayerIDs() {
 			for (int i = 0; i < connectedPlayers.Count; i++) {
 				connectedPlayers [i].SetPlayerId (i);
+			}
+		}
+
+		private void UnlistMatch () {
+			if (matchMaker != null) {
+				matchMaker.SetMatchAttributes (matchInfo.networkId, false, 0, OnSetMatchAttributes);
 			}
 		}
 
@@ -181,6 +189,24 @@ namespace Bomberman.Networking {
 			base.OnMatchJoined (success, extendedInfo, matchInfo);
 
 			print (matchInfo.networkId.ToString() + " joined");
+		}
+
+		public override void OnClientConnect (NetworkConnection conn)
+		{
+			// base.OnClientConnect (conn);
+
+			Debug.Log ("OnClientConnect");
+
+			ClientScene.Ready (conn);
+			ClientScene.AddPlayer (0);
+
+		}
+
+		public override void OnClientDisconnect (NetworkConnection conn)
+		{
+			Debug.Log ("OnClientDisconnect");
+
+			base.OnClientDisconnect (conn);
 		}
 
 		public override void OnClientSceneChanged (NetworkConnection conn)

@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 222941461514118908}
   - component: {fileID: 114116887842327108}
   - component: {fileID: 114037094548988238}
+  - component: {fileID: 114207898390486296}
   m_Layer: 5
   m_Name: LobbyPlayer
   m_TagString: Untagged
@@ -218,6 +219,38 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Username...
+--- !u!114 &114207898390486296
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1399406584755078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 229
+    i1: 163
+    i2: 37
+    i3: 247
+    i4: 89
+    i5: 225
+    i6: 68
+    i7: 100
+    i8: 105
+    i9: 234
+    i10: 124
+    i11: 102
+    i12: 88
+    i13: 68
+    i14: 34
+    i15: 30
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!114 &114319736772555826
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -82,6 +82,12 @@ public class PlayerManager : NetworkBehaviour {
 		}
 	}
 
+	public int Range {
+		get {
+			return range;
+		}
+	}
+
 	[SyncVar]
 	private Vector2 syncPosition;
 	[SyncVar]
@@ -96,6 +102,8 @@ public class PlayerManager : NetworkBehaviour {
 	private bool dead;
 	[SyncVar(hook="OnInvincible")]
 	private bool invincible;
+	[SyncVar]
+	protected int range = 1;
 
 	private float syncTimer = 0f, deathTimer = 0f, invincibleTimer = 0f;
 	private Vector2 spawnPoint;
@@ -130,6 +138,10 @@ public class PlayerManager : NetworkBehaviour {
 		int y = Mathf.RoundToInt(rb.position.y / 0.5f);
 
 		CmdSpawnBomb (new Vector2(x * 0.5f, y * 0.5f), t);
+	}
+
+	public void IncreaseExplosionRange() {
+		range++;
 	}
 
 	private void AnimateLocalPlayer() {
@@ -265,7 +277,7 @@ public class PlayerManager : NetworkBehaviour {
 	private void CmdSpawnBomb(Vector2 position, float t) {
 		GameObject bombObj = Instantiate (playerBomb.BombPrefab);
 		bombObj.transform.position = position;
-		bombObj.GetComponent<Bomb> ().Init (t);
+		bombObj.GetComponent<Bomb> ().Init (t, Range);
 
 		NetworkServer.SpawnWithClientAuthority (bombObj, networkPlayer.gameObject);
 	}

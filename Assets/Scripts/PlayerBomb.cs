@@ -38,4 +38,5 @@ public class PlayerBomb : MonoBehaviour {
 			playerManager.SpawnBomb (bombLifeTime);
 		}
 	}
+
 }

@@ -10,7 +10,7 @@ public class Bomb : NetworkBehaviour {
 	[SyncVar]
 	public float lifeTime = -1f;
 	[SyncVar]
-	private int range = 2;
+	private int range = 1;
 
 	private float bombTimer;
 
@@ -33,8 +33,9 @@ public class Bomb : NetworkBehaviour {
 		}
 	}
 
-	public void Init (float t) {
+	public void Init (float t, int r) {
 		lifeTime = t;
+		range = r;
 	}
 
 	protected void OnTriggerExit2D(Collider2D c) {

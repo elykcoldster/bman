@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlayerMovement : MonoBehaviour {
+public class PlayerMovement : NetworkBehaviour {
 
 	public float MoveSpeed {
 		get {
@@ -11,6 +12,7 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	[SerializeField]
+	[SyncVar]
 	protected float moveSpeed = 2f;
 
 	private PlayerManager playerManager;

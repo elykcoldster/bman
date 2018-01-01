@@ -15,8 +15,27 @@ public class GameManager : Singleton<GameManager> {
 		}
 	}
 
+	public List<PowerUp> PowerUps {
+		get {
+			return powerUps;
+		}
+	}
+
+	public float PowerUpChance {
+		get {
+			return powerUpChance;
+		}
+	}
+
 	[SerializeField]
 	protected List<SpawnPoint> spawnPoints;
+
+	[SerializeField]
+	[Range(0,1f)]
+	protected float powerUpChance = 0.33f;
+
+	[SerializeField]
+	protected List<PowerUp> powerUps;
 
 	public GameObject explosionCenter, explosionLeft, explosionRight, explosionUp, explosionDown, explosionH, explosionV;
 

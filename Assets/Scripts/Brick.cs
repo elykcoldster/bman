@@ -16,6 +16,16 @@ public class Brick : NetworkBehaviour {
 	}
 
 	public void Destroy() {
+
+		if (Random.value < GameManager.Instance.PowerUpChance) {
+			int index = Random.Range (0, GameManager.Instance.PowerUps.Count);
+
+			PowerUp powerUp = Instantiate (GameManager.Instance.PowerUps [index]);
+			powerUp.transform.position = transform.position;
+
+			NetworkServer.Spawn (powerUp.gameObject);
+		}
+
 		if (isServer) {
 			NetworkServer.Destroy (gameObject);
 		}
